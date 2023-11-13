@@ -62,7 +62,7 @@ fn main() {
                 connected = true;
             }
             Ok(PingReceive::Timeout) => {
-                todo!("Should never be called. If you see this, wtf???");
+                panic!("Unexpected response"); // Despite being called Timeout this Result is not returned by ping_sender when the ping times out. Instead it only returns a Ok(Data(...)) or Err(_).
             }
             Err(_) => {
                 connected = false;
