@@ -4,7 +4,7 @@ authors = ["SlenLen"]
 version = "0.1.0"
 edition = "2021"
 readme = "README.md"
-description = "simple logger that tells you at what times your device couldn't connect to the internet GPL-3.0-or-later"
+description = "A simple connection status logger GPL-3.0-or-later"
 repository = "https://github.com/slenlen/conlogger/"
 license = "GPL-3.0-or-later"
 

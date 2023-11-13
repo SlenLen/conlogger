@@ -10,7 +10,7 @@ use std::fs::OpenOptions;
 use std::io::prelude::*;
 use clap::Parser;
 
-/// simple logger that tells you at what times your device couldn't connect to the internet
+/// A simple connection status logger
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
