@@ -71,11 +71,11 @@ fn main() {
 
         if connected != last_connected {
             let _now: DateTime<Local> = Local::now();
-            let output: String = format!("from {} to {} ({}ms): {} connection",
+            let output: String = format!("from {} to {} ({}ms): connection {}",
                                         last_change.format("%T%.3f"),
                                         _now.format("%T%.3f"),
                                         (_now - last_change).num_milliseconds(),
-                                        if connected {"successful"} else {"lost"});
+                                        if connected {"down"} else {"up"});
 
             if args.verbose {
                 println!("{}", output);
