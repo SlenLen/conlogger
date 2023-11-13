@@ -21,7 +21,7 @@ The releases are Linux 64-bit executables only. If you're on a different OS or a
 ## Building
 Simply clone the repository with `git clone https://github.com/SlenLen/conlogger.git` and run `cargo build --release`.
 
-### Build with
+### Built with
 - [ping-fox](https://github.com/rng-dynamics/ping-fox) for doing the actual pings
 - [clap](https://github.com/clap-rs/clap) for command line arguments
 - [chrono](https://github.com/chronotope/chrono) for getting time and date
