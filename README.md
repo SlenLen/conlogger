@@ -16,12 +16,11 @@ I was motivated to create this program after years of a *very good experience wi
 
 Grab the [latest release](https://github.com/SlenLen/conlogger/releases/latest) from the releases. The executable will create the log files in the same directory it is in, so make sure you have write permission for the directory.
 
-The releases are Linux 64-bit executables only. If you're on a different OS or architecture see below for instructions to compile the program yourself.
+I only provide Windows x86-64 and Linux x86-64 executables. If you have a different CPU architecture or use a different OS, see below for compiling instructions.
 
 ## Building
 Simply clone the repository with `git clone https://github.com/SlenLen/conlogger.git` and run `cargo build --release`.
 
 ### Built with
-- [ping-fox](https://github.com/rng-dynamics/ping-fox) for doing the actual pings
 - [clap](https://github.com/clap-rs/clap) for command line arguments
 - [chrono](https://github.com/chronotope/chrono) for getting time and date
