@@ -8,7 +8,8 @@ cargo +nightly build \
     -Z build-std-features=panic_immediate_abort \
     --target x86_64-unknown-linux-gnu \
     --release \
-    && upx --best --lzma ./target/x86_64-unknown-linux-gnu/release/conlogger
+    && upx --best --lzma ./target/x86_64-unknown-linux-gnu/release/conlogger \
+    && mv ./target/x86_64-unknown-linux-gnu/release/conlogger ./target/x86_64-unknown-linux-gnu/release/conlogger-x86_64
 
 RUSTFLAGS="-C opt-level="z"" \
 cargo +nightly build \
@@ -16,6 +17,8 @@ cargo +nightly build \
     -Z build-std-features=panic_immediate_abort \
     --target x86_64-pc-windows-gnu \
     --release \
-    && upx --best --lzma ./target/x86_64-pc-windows-gnu/release/conlogger.exe
-echo "Linux build at: $(cd "$(dirname "./target/x86_64-unknown-linux-gnu/release/conlogger")"; pwd)"
-echo "Windows build at: $(cd "$(dirname "./target/x86_64-pc-windows-gnu/release/conlogger.exe")"; pwd)"
+    && upx --best --lzma ./target/x86_64-pc-windows-gnu/release/conlogger.exe \
+    && mv ./target/x86_64-pc-windows-gnu/release/conlogger.exe ./target/x86_64-pc-windows-gnu/release/conlogger-win64.exe
+
+echo "Linux build at: $(cd "./target/x86_64-unknown-linux-gnu/release/"; pwd)"
+echo "Windows build at: $(cd "./target/x86_64-pc-windows-gnu/release/"; pwd)"
