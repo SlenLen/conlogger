@@ -1,14 +1,16 @@
 // This is by no means supposed to be a professional program or anything similar.
 // This is a very botchy program but it works I guess.
+#![feature(io_error_more)]
 
-
-use ping_fox::{PingFoxConfig, PingReceive, PingReceiveData, PingSentToken, SocketType};
-use std::net::Ipv4Addr;
-use std::time::Duration;
+use connection::{get_connection_status, ADDRS};
 use chrono::{DateTime, Local};
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 use clap::Parser;
+
+use crate::connection::ConnectionStatus;
+
+mod connection;
 
 /// A simple connection status logger
 #[derive(Parser, Debug)]
@@ -20,15 +22,15 @@ struct Args {
 
     /// Set the timout after which a ping and the connection are deemed "lost"
     #[arg(short, long)]
-    #[clap(default_value_t = 60)]
+    #[clap(default_value_t = 120)]
     timeout: u64,
 }
 
 fn main() {   
     let args = Args::parse();
 
-    let mut connected: bool;
-    let mut last_connected: bool = true;
+    let mut status: ConnectionStatus;
+    let mut last_status: ConnectionStatus = ConnectionStatus::ConnectionUp;
     let mut last_change: DateTime<Local> = Local::now();
 
     let _now: DateTime<Local> = Local::now();
@@ -40,49 +42,28 @@ fn main() {
     let filename = exe_dir.to_str().expect("Couldn't convert executable directory to string.");
     
     loop {
-        let config = PingFoxConfig {
-            socket_type: SocketType::DGRAM,
-            timeout: Duration::from_millis(args.timeout),
-            channel_size: 1,
-        };
-    
-        let (mut ping_sender, mut ping_receiver) = ping_fox::create(&config).unwrap();
-    
-        let token: PingSentToken = ping_sender.send_to("8.8.8.8".parse::<Ipv4Addr>().unwrap()).unwrap();
-        let ping_response = ping_receiver.receive(token);
-    
-        match ping_response {
-            Ok(PingReceive::Data(PingReceiveData {
-                package_size: _,
-                ip_addr: _,
-                ttl: _,
-                sequence_number: _,
-                ping_duration: _,
-            })) => {
-                connected = true;
-            }
-            Ok(PingReceive::Timeout) => {
-                panic!("Unexpected response"); // Despite being called Timeout this Result is not returned by ping_sender when the ping times out. Instead it only returns a Ok(Data(...)) or Err(_).
-            }
-            Err(_) => {
-                connected = false;
-            },
-        };
+        let test = get_connection_status(&ADDRS, std::time::Duration::from_millis(args.timeout));
+        status = test.unwrap();
 
-        if connected != last_connected {
+
+        if status != last_status {
             let _now: DateTime<Local> = Local::now();
-            let output: String = format!("from {} to {} ({}ms): connection {}",
-                                        last_change.format("%T%.3f"),
-                                        _now.format("%T%.3f"),
-                                        (_now - last_change).num_milliseconds(),
-                                        if connected {"down"} else {"up"});
+            let output: String = format!("from {} to {} ({}ms): {}",
+                last_change.format("%T%.3f"),
+                _now.format("%T%.3f"),
+                (_now - last_change).num_milliseconds(),
+                match last_status {
+                    ConnectionStatus::ConnectionUp => "connection up",
+                    ConnectionStatus::ConnectionDown => "connection down",
+                    ConnectionStatus::NoReachableNetwork => "no reachable network"
+                });
 
             if args.verbose {
                 println!("{}", output);
             }
 
             last_change = Local::now();
-            last_connected = connected;
+            last_status = status;
 
             let mut file = OpenOptions::new()
                 .create(true)
